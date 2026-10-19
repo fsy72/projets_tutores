@@ -1,0 +1,356 @@
+<main class="admin-layout">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/espace/admin">
+      <span class="brand-mark"><i class="bi bi-mortarboard"></i></span>
+      <span>Projets tutorés</span>
+    </a>
+    <p class="menu-label">ADMINISTRATION</p>
+    <nav aria-label="Navigation administration">
+      <button type="button" [class.active]="onglet() === 'overview'" (click)="changerOnglet('overview')"><i
+          class="bi bi-grid-1x2 nav-icon" aria-hidden="true"></i>Vue d'ensemble</button>
+      <button type="button" [class.active]="onglet() === 'users'" (click)="changerOnglet('users')"><i
+          class="bi bi-people nav-icon" aria-hidden="true"></i>Utilisateurs <span class="nav-count">{{
+          utilisateursGeres().length }}</span></button>
+      <button type="button" [class.active]="onglet() === 'subjects'" (click)="changerOnglet('subjects')"><i
+          class="bi bi-journal-text nav-icon" aria-hidden="true"></i>Sujets <span class="nav-count">{{ sujets().length
+          }}</span></button>
+      <button type="button" [class.active]="onglet() === 'applications'" (click)="changerOnglet('applications')"><i
+          class="bi bi-file-earmark-check nav-icon" aria-hidden="true"></i>Candidatures <span class="nav-count">{{
+          candidatures().length }}</span></button>
+    </nav>
+    <div class="side-bottom">
+      <div class="admin-avatar"><i class="bi bi-person-fill"></i></div>
+      <div class="admin-details">
+        <strong>{{ auth.utilisateur?.prenom }} {{ auth.utilisateur?.nom }}</strong><span>Administrateur</span>
+      </div>
+      <button class="logout" type="button" aria-label="Se déconnecter" title="Se déconnecter" (click)="deconnecter()"><i
+          class="bi bi-box-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </aside>
+
+  <section class="main-area">
+    <header class="pagebar">
+      <div>
+        <p class="breadcrumb">Administration <span>/</span> {{ titreOnglet }}</p>
+        <h1>{{ titreOnglet }}</h1>
+      </div><button type="button" class="primary" (click)="ouvrirCreation()"><i class="bi bi-person-fill-add"
+          aria-hidden="true"></i> Ajouter un utilisateur</button>
+    </header>
+    <ng-container *ngIf="erreur()">
+      <div class="alert error" role="alert">{{ erreur() }}<button type="button" (click)="erreur.set('')"
+          aria-label="Fermer">×</button></div>
+    </ng-container>
+    <ng-container *ngIf="succes()">
+      <div class="alert success" role="status">{{ succes() }}<button type="button" (click)="succes.set('')"
+          aria-label="Fermer">×</button></div>
+    </ng-container>
+
+    <ng-container *ngIf="onglet() === 'overview'">
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">VOTRE ESPACE DE PILOTAGE</p>
+          <h2>Bonjour, {{ auth.utilisateur?.prenom }}.</h2>
+          <p>Retrouvez ici un aperçu des utilisateurs, sujets et candidatures de la plateforme.</p>
+        </div>
+        <div class="welcome-mark"><i class="bi bi-person-fill-gear"></i></div>
+      </section>
+      <section class="stats" aria-label="Statistiques">
+        <article class="stat-card">
+          <div class="stat-icon green"><i class="bi bi-people" aria-hidden="true"></i></div>
+          <p>Utilisateurs</p><strong>{{ utilisateurs().length - 1 }}</strong><span>{{ countRole('ETUDIANT') }} étudiants
+            · {{
+            countRole('ENSEIGNANT') }} enseignants</span>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon blue"><i class="bi bi-journal-bookmark" aria-hidden="true"></i></div>
+          <p>Sujets</p><strong>{{ sujets().length }}</strong><span>{{ countSubjects('DISPONIBLE') }} disponibles</span>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon amber"><i class="bi bi-send" aria-hidden="true"></i></div>
+          <p>Candidatures</p><strong>{{ candidatures().length }}</strong><span>{{ countApplications('EN_ATTENTE') }} en
+            attente</span>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon lilac"><i class="bi bi-check2-circle" aria-hidden="true"></i></div>
+          <p>Acceptées</p><strong>{{ countApplications('ACCEPTEE') }}</strong><span>candidatures retenues</span>
+        </article>
+      </section>
+      <section class="overview-grid">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RÉCENT</p>
+              <h2>Dernières candidatures</h2>
+            </div><button type="button" class="text-button" (click)="changerOnglet('applications')">Tout voir <i
+                class="bi bi-arrow-right"></i></button>
+          </div>
+          <ng-container *ngIf="loadingCandidatures(); else cfElse2">
+            <div class="table-empty">Chargement des données…</div>
+          </ng-container><ng-template #cfElse2><ng-container *ngIf="!candidatures().length; else cfElse1">
+              <div class="table-empty">Aucune candidature reçue pour le moment.</div>
+            </ng-container><ng-template #cfElse1>
+              <div class="recent-list"><ng-container *ngFor="let c of candidatures().slice(0, 5); trackBy: trackById">
+                  <div class="recent-row">
+                    <div class="person-avatar"><i class="bi bi-person-fill"></i></div>
+                    <div class="recent-info"><strong>{{ c.etudiant.prenom }} {{ c.etudiant.nom }}</strong><span>{{
+                        c.sujet.titre
+                        }}</span></div><span class="status" [class.pending]="c.statut === 'EN_ATTENTE'"
+                      [class.accepted]="c.statut === 'ACCEPTEE'" [class.rejected]="c.statut === 'REJETEE'">{{
+                      statutLabel(c.statut) }}</span>
+                  </div>
+                </ng-container></div>
+            </ng-template></ng-template>
+        </article>
+        <article class="panel role-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">RÉPARTITION</p>
+              <h2>Comptes par rôle</h2>
+            </div>
+          </div>
+          <ng-container *ngFor="let role of roles; trackBy: trackByValue">
+            <div class="role-row"><span>{{ role.label }}</span><strong>{{
+                countRole(role.value) }}</strong>
+              <div class="bar"><i [style.width.%]="ratioRole(role.value)"></i></div>
+            </div>
+          </ng-container>
+        </article>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="onglet() === 'users'">
+      <section class="table-panel">
+        <div class="filters"><label class="search"><i class="bi bi-search" aria-hidden="true"></i><input
+              [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" name="recherche"
+              placeholder="Nom, prénom ou adresse e-mail" /></label>
+          <select [ngModel]="filtreRole()" (ngModelChange)="filtreRole.set($event)" name="filtreRole"
+            aria-label="Filtrer par rôle">
+            <option value="TOUS">Tous les rôles</option><ng-container
+              *ngFor="let role of rolesFiltrables; trackBy: trackByValue">
+              <option [value]="role.value">{{ role.label }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <ng-container *ngIf="chargement(); else cfElse4">
+          <div class="table-empty">Chargement des utilisateurs…</div>
+        </ng-container><ng-template #cfElse4><ng-container *ngIf="!utilisateursFiltres().length; else cfElse3">
+            <div class="table-empty">Aucun utilisateur ne correspond à cette
+              recherche.</div>
+          </ng-container><ng-template #cfElse3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>UTILISATEUR</th>
+                    <th>RÔLE</th>
+                    <th>INFORMATIONS</th>
+                    <th>IDENTIFIANT</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let user of utilisateursFiltres(); trackBy: trackById">
+                    <tr>
+                      <td>
+                        <div class="user-cell"><span class="person-avatar"><i
+                              class="bi bi-person-fill"></i></span><span><strong>{{ user.prenom }} {{ user.nom
+                              }}</strong><small>{{ user.email
+                              }}</small></span></div>
+                      </td>
+                      <td><span class="role-chip" [class]="'role-chip role-' + user.role.toLowerCase()">{{
+                          roleLabel(user.role)
+                          }}</span></td>
+                      <td class="muted">{{ user.role === 'ETUDIANT' ? user.niveau : user.role === 'ENSEIGNANT' ?
+                        user.departement : '—' }}</td>
+                      <td class="muted">{{ user.matricule || '—' }}</td>
+                      <td>
+                        <div class="row-actions"><button type="button" title="Modifier" aria-label="Modifier"
+                            (click)="ouvrirModification(user)"><i class="bi bi-pencil"
+                              aria-hidden="true"></i></button><button type="button" title="Changer le mot de passe"
+                            aria-label="Changer le mot de passe" (click)="ouvrirMotDePasse(user)"><i class="bi bi-key"
+                              aria-hidden="true"></i></button><button type="button" title="Supprimer"
+                            aria-label="Supprimer" [disabled]="auth.utilisateur?.id === user.id"
+                            (click)="demanderSuppression(user)"><i class="bi bi-trash3" aria-hidden="true"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-template></ng-template>
+        <div class="table-footer">{{ utilisateursFiltres().length }} utilisateur{{ utilisateursFiltres().length === 1 ?
+          ''
+          : 's' }}</div>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="onglet() === 'subjects'">
+      <section class="table-panel">
+        <ng-container *ngIf="loadingSujets(); else cfElse6">
+          <div class="table-empty">Chargement des sujets…</div>
+        </ng-container><ng-template #cfElse6><ng-container *ngIf="!sujets().length; else cfElse5">
+            <div class="table-empty">Aucun sujet n’est enregistré.</div>
+          </ng-container><ng-template #cfElse5>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>SUJET</th>
+                    <th>ENSEIGNANT</th>
+                    <th>CAPACITÉ</th>
+                    <th>STATUT</th>
+                    <th>CRÉÉ LE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let sujet of sujets(); trackBy: trackById">
+                    <tr>
+                      <td><strong>{{ sujet.titre }}</strong><small class="cell-description">{{ sujet.description ||
+                          'Sans description' }}</small></td>
+                      <td class="muted">{{ sujet.enseignant?.prenom }} {{ sujet.enseignant?.nom }}</td>
+                      <td>{{ sujet.capaciteMax }}</td>
+                      <td><span class="status" [class.accepted]="sujet.statut === 'DISPONIBLE'"
+                          [class.rejected]="sujet.statut === 'INDISPONIBLE'">{{ sujet.statut === 'DISPONIBLE' ?
+                          'Disponible' :
+                          'Indisponible' }}</span></td>
+                      <td class="muted">{{ sujet.dateCreation | date:'d MMM y' }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-template></ng-template>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="onglet() === 'applications'">
+      <section class="table-panel">
+        <div class="filters"><label class="search"><i class="bi bi-search" aria-hidden="true"></i><input
+              [ngModel]="rechercheCandidature()" (ngModelChange)="rechercheCandidature.set($event)"
+              name="rechercheCandidature" placeholder="Rechercher un étudiant ou un sujet" /></label><span
+            class="pending-total">{{ countApplications('EN_ATTENTE') }} en attente de décision</span></div>
+        <ng-container *ngIf="loadingCandidatures(); else cfElse8">
+          <div class="table-empty">Chargement des candidatures…</div>
+        </ng-container><ng-template #cfElse8><ng-container *ngIf="!candidaturesFiltrees().length; else cfElse7">
+            <div class="table-empty">Aucune candidature trouvée.</div>
+          </ng-container><ng-template #cfElse7>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ÉTUDIANT</th>
+                    <th>SUJET</th>
+                    <th>MOTIVATION</th>
+                    <th>DATE</th>
+                    <th>STATUT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let c of candidaturesFiltrees(); trackBy: trackById">
+                    <tr>
+                      <td>
+                        <div class="student-cell"><strong>{{ c.etudiant.prenom }} {{ c.etudiant.nom }}</strong><small>{{
+                            c.etudiant.email }}</small></div>
+                      </td>
+                      <td>{{ c.sujet.titre }}</td>
+                      <td class="motivation-cell">{{ c.motivation || '—' }}</td>
+                      <td class="muted">{{ c.dateCandidature | date:'d MMM y' }}</td>
+                      <td><span class="status" [class.pending]="c.statut === 'EN_ATTENTE'"
+                          [class.accepted]="c.statut === 'ACCEPTEE'" [class.rejected]="c.statut === 'REJETEE'">{{
+                          statutLabel(c.statut) }}</span></td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-template></ng-template>
+      </section>
+    </ng-container>
+  </section>
+
+  <ng-container *ngIf="modal() === 'utilisateur'">
+    <div class="overlay" (click)="fermerModal()">
+      <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="user-dialog-title"
+        (click)="$event.stopPropagation()">
+        <button class="close" type="button" aria-label="Fermer" (click)="fermerModal()"><i class="bi bi-x-lg"
+            aria-hidden="true"></i></button>
+        <p class="eyebrow">GESTION DES COMPTES</p>
+        <h2 id="user-dialog-title">{{ utilisateurEnEdition() ? 'Modifier un utilisateur' : 'Créer un utilisateur' }}
+        </h2>
+        <ng-container *ngIf="erreur()">
+          <div class="alert error" role="alert">{{ erreur() }}</div>
+        </ng-container>
+        <form (ngSubmit)="enregistrerUtilisateur()">
+          <div class="form-grid"><label>Prénom<input name="prenom" [(ngModel)]="form.prenom"
+                required /></label><label>Nom<input name="nom" [(ngModel)]="form.nom" required /></label></div>
+          <label>Adresse e-mail<input type="email" name="email" [(ngModel)]="form.email" required /></label>
+          <label>Rôle<select name="role" [(ngModel)]="form.role" required>
+              <ng-container *ngFor="let role of rolesFiltrables; trackBy: trackByValue">
+                <option [value]="role.value">{{ role.label }}</option>
+              </ng-container>
+              <option *ngIf="utilisateurEnEdition() && form.role === 'ADMIN'" value="ADMIN">Administrateur (compte
+                existant)</option>
+            </select></label>
+          <ng-container *ngIf="form.role === 'ETUDIANT'">
+            <div class="form-grid"><label>Matricule<input name="matricule" [(ngModel)]="form.matricule"
+                  required /></label><label>Niveau<input name="niveau" [(ngModel)]="form.niveau" required /></label>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="form.role === 'ENSEIGNANT'"> <label>Département<input name="departement"
+                [(ngModel)]="form.departement" required /></label> </ng-container>
+          <ng-container *ngIf="!utilisateurEnEdition()"> <label>Mot de passe<input type="password" name="motDePasse"
+                [(ngModel)]="form.motDePasse" minlength="8" autocomplete="new-password" required /><small>Au moins 8
+                caractères.</small></label>
+            <label>Confirmer le mot de passe<input type="password" name="confirmationNouveauCompte"
+                [(ngModel)]="confirmationNouveauCompte" minlength="8" autocomplete="new-password" required /></label>
+          </ng-container>
+          <div class="dialog-actions"><button type="button" class="secondary"
+              (click)="fermerModal()">Annuler</button><button type="submit" class="primary" [disabled]="envoi()">{{
+              envoi() ? 'Enregistrement…' : utilisateurEnEdition() ? 'Enregistrer' : 'Créer le compte' }}</button></div>
+        </form>
+      </section>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="modal() === 'motdepasse'">
+    <div class="overlay" (click)="fermerModal()">
+      <section class="dialog compact" role="dialog" aria-modal="true" aria-labelledby="password-title"
+        (click)="$event.stopPropagation()">
+        <button class="close" type="button" aria-label="Fermer" (click)="fermerModal()"><i class="bi bi-x-lg"
+            aria-hidden="true"></i></button>
+        <p class="eyebrow">SÉCURITÉ DU COMPTE</p>
+        <h2 id="password-title">Changer le mot de passe</h2>
+        <p class="dialog-copy">{{ utilisateurCible()?.prenom }} {{ utilisateurCible()?.nom }} · {{
+          utilisateurCible()?.email }}</p>
+        <ng-container *ngIf="erreur()">
+          <div class="alert error" role="alert">{{ erreur() }}</div>
+        </ng-container>
+        <form (ngSubmit)="changerMotDePasse()"><label>Nouveau mot de passe<input type="password"
+              name="nouveauMotDePasse" [(ngModel)]="nouveauMotDePasse" minlength="8" autocomplete="new-password"
+              required /></label><label>Confirmer le mot de passe<input type="password" name="confirmationMotDePasse"
+              [(ngModel)]="confirmationMotDePasse" minlength="8" autocomplete="new-password" required /></label>
+          <div class="dialog-actions"><button type="button" class="secondary"
+              (click)="fermerModal()">Annuler</button><button type="submit" class="primary" [disabled]="envoi()">{{
+              envoi() ? 'Enregistrement…' : 'Mettre à jour' }}</button></div>
+        </form>
+      </section>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="modal() === 'suppression'">
+    <div class="overlay" (click)="fermerModal()">
+      <section class="dialog compact" role="alertdialog" aria-modal="true" aria-labelledby="delete-title"
+        (click)="$event.stopPropagation()"><button class="close" type="button" aria-label="Fermer"
+          (click)="fermerModal()"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+        <p class="eyebrow">CONFIRMATION</p>
+        <h2 id="delete-title">Supprimer ce compte ?</h2>
+        <p class="dialog-copy">Le compte de <strong>{{ utilisateurCible()?.prenom }} {{ utilisateurCible()?.nom
+            }}</strong> sera supprimé. Cette action ne peut pas être annulée.</p><ng-container *ngIf="erreur()">
+          <div class="alert error" role="alert">{{ erreur() }}</div>
+        </ng-container>
+        <div class="dialog-actions"><button type="button" class="secondary"
+            (click)="fermerModal()">Annuler</button><button type="button" class="danger" [disabled]="envoi()"
+            (click)="supprimerUtilisateur()">{{ envoi() ? 'Suppression…' : 'Supprimer le compte' }}</button></div>
+      </section>
+    </div>
+  </ng-container>
+</main>

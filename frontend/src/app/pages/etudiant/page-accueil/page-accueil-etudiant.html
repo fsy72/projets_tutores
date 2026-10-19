@@ -1,0 +1,86 @@
+<main class="page-accueil-etudiant">
+  <ng-container *ngIf="chargement(); else cfElse3">
+    <div class="student-home-state"><span class="student-home-spinner"></span>
+      <p>Chargement de votre espace…</p>
+    </div>
+  </ng-container><ng-template #cfElse3>
+    <ng-container *ngIf="erreur()">
+      <div class="student-home-alert" role="alert"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{
+        erreur() }}</div>
+    </ng-container>
+    <section class="student-home-welcome">
+      <div>
+        <p class="student-home-eyebrow">VOTRE ESPACE ÉTUDIANT</p>
+        <h1>Bonjour, {{ auth.utilisateur?.prenom }}.</h1>
+        <p>Parcourez les sujets, envoyez vos candidatures et suivez leur évolution.</p><a routerLink="./sujets"
+          class="student-home-primary">Explorer les sujets <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+      </div><span class="student-home-illustration"><i class="bi bi-lightbulb" aria-hidden="true"></i><span
+          class="student-home-orbit"></span></span>
+    </section>
+    <section class="student-home-stats" aria-label="Résumé de votre espace">
+      <article><span class="student-stat-icon green"><i class="bi bi-journal-bookmark" aria-hidden="true"></i></span>
+        <p>Sujets disponibles</p><strong>{{ sujets().length }}</strong><small>à découvrir</small>
+      </article>
+      <article><span class="student-stat-icon blue"><i class="bi bi-send" aria-hidden="true"></i></span>
+        <p>Mes candidatures</p><strong>{{ candidatures().length }}</strong><small>envoyée{{ candidatures().length === 1
+          ? '' : 's' }}</small>
+      </article>
+      <article><span class="student-stat-icon amber"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>
+        <p>En attente</p><strong>{{ compter('EN_ATTENTE') }}</strong><small>à suivre</small>
+      </article>
+      <article><span class="student-stat-icon lilac"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+        <p>Acceptées</p><strong>{{ compter('ACCEPTEE') }}</strong><small>projet{{ compter('ACCEPTEE') === 1 ? '' : 's'
+          }} retenu{{ compter('ACCEPTEE') === 1 ? '' : 's' }}</small>
+      </article>
+    </section>
+
+    <section class="student-home-grid">
+      <article class="student-home-panel">
+        <div class="student-home-panel-heading">
+          <div>
+            <p class="student-home-eyebrow">SUIVI</p>
+            <h2>Mes dernières candidatures</h2>
+          </div><a routerLink="./candidatures">Tout voir <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <ng-container *ngIf="!candidaturesRecentes().length; else cfElse1">
+          <div class="student-home-empty"><span><i class="bi bi-send" aria-hidden="true"></i></span>
+            <h3>Pas encore de candidature</h3>
+            <p>Choisissez un sujet qui vous intéresse pour commencer.</p><a routerLink="./sujets">Découvrir les
+              sujets</a>
+          </div>
+        </ng-container><ng-template #cfElse1>
+          <div class="student-home-application-list"><ng-container
+              *ngFor="let c of candidaturesRecentes(); trackBy: trackById">
+              <article class="student-home-application"><span class="student-home-subject-icon"><i
+                    class="bi bi-journal-text" aria-hidden="true"></i></span><span
+                  class="student-home-app-info"><strong>{{ c.sujet.titre }}</strong><small>Envoyée le {{
+                    c.dateCandidature | date:'d MMM y' }}</small></span><span class="student-home-status"
+                  [class.pending]="c.statut === 'EN_ATTENTE'" [class.accepted]="c.statut === 'ACCEPTEE'"
+                  [class.rejected]="c.statut === 'REJETEE'"><i></i>{{ statutLabel(c.statut) }}</span></article>
+            </ng-container></div>
+        </ng-template>
+      </article>
+      <article class="student-home-panel suggestions">
+        <div class="student-home-panel-heading">
+          <div>
+            <p class="student-home-eyebrow">À DÉCOUVRIR</p>
+            <h2>Sujets disponibles</h2>
+          </div><a routerLink="./sujets">Tout voir <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <ng-container *ngIf="!sujetsSuggeres().length; else cfElse2">
+          <div class="student-home-empty compact"><span><i class="bi bi-journal-x" aria-hidden="true"></i></span>
+            <p>Aucun nouveau sujet disponible pour le moment.</p>
+          </div>
+        </ng-container><ng-template #cfElse2>
+          <div class="student-home-suggestion-list"><ng-container
+              *ngFor="let sujet of sujetsSuggeres(); trackBy: trackById"> <a class="student-home-suggestion"
+                routerLink="./sujets"><span class="student-suggestion-icon"><i class="bi bi-lightbulb"
+                    aria-hidden="true"></i></span><span><strong>{{ sujet.titre }}</strong><small>{{
+                    sujet.placesRestantes }} place{{ sujet.placesRestantes === 1 ? '' : 's' }} restante{{
+                    sujet.placesRestantes === 1 ? '' : 's' }}</small></span><i
+                  class="bi bi-arrow-up-right suggestion-arrow" aria-hidden="true"></i></a> </ng-container></div>
+        </ng-template>
+      </article>
+    </section>
+  </ng-template>
+</main>

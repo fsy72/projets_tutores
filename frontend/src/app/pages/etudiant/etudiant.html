@@ -1,0 +1,19 @@
+<div class="student-app">
+  <header class="topbar">
+    <a class="brand" routerLink="/espace/etudiant/sujets">
+      <span class="brand-mark"><i class="bi bi-mortarboard"></i></span>
+      <span>Projets tutorés</span>
+    </a>
+    <nav aria-label="Navigation étudiant">
+      <a routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Accueil</a>
+      <a routerLink="sujets" routerLinkActive="active">Sujets</a>
+      <a routerLink="candidatures" routerLinkActive="active">Mes candidatures</a>
+    </nav>
+    <div class="user-menu">
+      <span class="user-name">{{ auth.utilisateur?.prenom }} {{ auth.utilisateur?.nom }}</span>
+      <button type="button" (click)="deconnecter()">Déconnexion</button>
+    </div>
+  </header>
+  <router-outlet />
+  <footer>© 2026 Projets tutorés</footer>
+</div>

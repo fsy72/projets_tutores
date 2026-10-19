@@ -1,0 +1,492 @@
+.page-accueil-etudiant {
+  padding: 32px 0 18px;
+}
+
+.student-home-eyebrow {
+  margin: 0 0 9px;
+  color: #71887a;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .14em;
+}
+
+.student-home-welcome {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  min-height: 195px;
+  padding: 25px 30px;
+  border: 1px solid #dfe9dc;
+  border-radius: 12px;
+  background: #f0f6ed;
+}
+
+.student-home-welcome h1 {
+  margin: 0;
+  color: #20382d;
+  font: 500 clamp(32px, calc(5vw + 2px), 47px)/1.1 Georgia, 'Times New Roman', serif;
+  letter-spacing: -.04em;
+}
+
+.student-home-welcome p:not(.student-home-eyebrow) {
+  max-width: 470px;
+  margin: 10px 0 17px;
+  color: #718077;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.student-home-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  border-radius: 7px;
+  background: #1d4435;
+  color: #fff;
+  padding: 10px 13px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.student-home-primary:hover {
+  background: #2d5a43;
+}
+
+.student-home-illustration {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  margin-right: 35px;
+  border-radius: 50%;
+  background: #dfebd7;
+  color: #63865a;
+  font-size: 42px;
+}
+
+.student-home-illustration::before,
+.student-home-orbit {
+  content: '';
+  position: absolute;
+  inset: -17px;
+  border: 1px solid #ccddc4;
+  border-radius: 50%;
+}
+
+.student-home-orbit {
+  inset: -32px;
+  border-style: dashed;
+  opacity: .8;
+}
+
+.student-home-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.student-home-stats article {
+  position: relative;
+  min-height: 116px;
+  padding: 14px;
+  border: 1px solid #e7ebe7;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.student-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  font-size: 15px;
+}
+
+.student-stat-icon.green {
+  color: #537c56;
+  background: #eef6eb;
+}
+
+.student-stat-icon.blue {
+  color: #587699;
+  background: #edf3f9;
+}
+
+.student-stat-icon.amber {
+  color: #9b7d40;
+  background: #fbf5e8;
+}
+
+.student-stat-icon.lilac {
+  color: #776299;
+  background: #f3eff8;
+}
+
+.student-home-stats article p {
+  margin: 10px 0 3px;
+  color: #77837b;
+  font-size: 11px;
+}
+
+.student-home-stats article strong {
+  display: block;
+  color: #28392f;
+  font: 500 25px Georgia, serif;
+}
+
+.student-home-stats article small {
+  position: absolute;
+  right: 11px;
+  bottom: 14px;
+  color: #a0aaa2;
+  font-size: 10px;
+}
+
+.student-home-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
+  gap: 14px;
+  margin-top: 15px;
+}
+
+.student-home-panel {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #e6ebe6;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.student-home-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.student-home-panel-heading .student-home-eyebrow {
+  margin: 0 0 5px;
+}
+
+.student-home-panel-heading h2 {
+  margin: 0;
+  color: #2b3b31;
+  font-size: 14px;
+}
+
+.student-home-panel-heading>a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #52745a;
+  text-decoration: none;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.student-home-panel-heading>a:hover {
+  color: #315b3c;
+}
+
+.student-home-application-list {
+  display: grid;
+}
+
+.student-home-application {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 0;
+  border-top: 1px solid #f0f2f0;
+}
+
+.student-home-subject-icon,
+.student-suggestion-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #eff5eb;
+  color: #6b8b63;
+  font-size: 15px;
+}
+
+.student-home-app-info {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.student-home-app-info strong {
+  overflow: hidden;
+  color: #415147;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-home-app-info small {
+  color: #9aa49d;
+  font-size: 10px;
+}
+
+.student-home-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 99px;
+  padding: 6px 8px;
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.student-home-status>i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.student-home-status.pending {
+  color: #8a6b2d;
+  background: #fbf5e7;
+}
+
+.student-home-status.accepted {
+  color: #47734b;
+  background: #edf6eb;
+}
+
+.student-home-status.rejected {
+  color: #a35348;
+  background: #fbefed;
+}
+
+.student-home-empty {
+  display: grid;
+  justify-items: center;
+  padding: 23px 12px 12px;
+  text-align: center;
+}
+
+.student-home-empty>span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #edf2ec;
+  color: #68836e;
+}
+
+.student-home-empty h3 {
+  margin: 10px 0 4px;
+  color: #405146;
+  font-size: 13px;
+}
+
+.student-home-empty p {
+  margin: 0;
+  color: #8a968d;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.student-home-empty>a {
+  margin-top: 11px;
+  color: #52745a;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.student-home-empty.compact {
+  padding-top: 30px;
+}
+
+.student-home-empty.compact p {
+  max-width: 190px;
+}
+
+.student-home-suggestion-list {
+  display: grid;
+}
+
+.student-home-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 0;
+  border-top: 1px solid #f0f2f0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.student-home-suggestion>span:nth-child(2) {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.student-home-suggestion strong {
+  overflow: hidden;
+  color: #415147;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-home-suggestion small {
+  color: #87958a;
+  font-size: 10px;
+}
+
+.student-home-suggestion:hover strong {
+  color: #507249;
+}
+
+.suggestion-arrow {
+  color: #a1ada2;
+  font-size: 14px;
+}
+
+.student-suggestion-icon {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.student-home-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #f4d0ca;
+  border-radius: 8px;
+  background: #fff1ef;
+  color: #a3382a;
+  font-size: 12px;
+}
+
+.student-home-state {
+  display: grid;
+  justify-items: center;
+  gap: 11px;
+  padding: 80px 15px;
+  color: #8a968d;
+  font-size: 13px;
+}
+
+.student-home-state p {
+  margin: 0;
+}
+
+.student-home-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #dfe8de;
+  border-top-color: #54815c;
+  border-radius: 50%;
+  animation: student-home-spin .75s linear infinite;
+}
+
+@keyframes student-home-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media(max-width:850px) {
+  .student-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-home-illustration {
+    margin-right: 15px;
+  }
+}
+
+@media(max-width:600px) {
+  .page-accueil-etudiant {
+    padding-top: 23px;
+  }
+
+  .student-home-welcome {
+    min-height: unset;
+    padding: 21px;
+  }
+
+  .student-home-illustration {
+    width: 70px;
+    height: 70px;
+    margin: 0 10px 0 15px;
+    font-size: 27px;
+  }
+
+  .student-home-illustration::before {
+    inset: -9px;
+  }
+
+  .student-home-orbit {
+    inset: -17px;
+  }
+
+  .student-home-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .student-home-stats article {
+    min-height: 105px;
+    padding: 12px;
+  }
+
+  .student-home-stats article small {
+    left: 12px;
+    right: auto;
+    bottom: 10px;
+  }
+
+  .student-home-panel {
+    padding: 14px;
+  }
+}
+
+@media(max-width:400px) {
+  .student-home-welcome {
+    padding: 18px;
+  }
+
+  .student-home-welcome h1 {
+    font-size: 30px;
+  }
+
+  .student-home-illustration {
+    width: 54px;
+    height: 54px;
+    margin-right: 3px;
+    font-size: 22px;
+  }
+
+  .student-home-primary {
+    gap: 10px;
+  }
+
+  .student-home-status {
+    padding: 5px 6px;
+    font-size: 9px;
+  }
+}

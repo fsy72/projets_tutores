@@ -1,0 +1,245 @@
+<main class="responsible-layout">
+  <aside class="responsible-sidebar">
+    <a class="responsible-brand" routerLink="/">
+      <span class="responsible-brand-mark"><i class="bi bi-mortarboard"></i></span>
+      <span>Projets tutorés</span>
+    </a>
+    <p class="responsible-menu-title">ESPACE PÉDAGOGIQUE</p>
+    <nav aria-label="Navigation responsable pédagogique">
+      <button type="button" [class.active]="onglet() === 'overview'" (click)="changerOnglet('overview')"><i
+          class="bi bi-grid-1x2" aria-hidden="true"></i>Vue d'ensemble</button>
+      <button type="button" [class.active]="onglet() === 'applications'" (click)="changerOnglet('applications')"><i
+          class="bi bi-inbox" aria-hidden="true"></i>Candidatures<span class="responsible-nav-count">{{
+          candidatures().length }}</span></button>
+      <button type="button" [class.active]="onglet() === 'subjects'" (click)="changerOnglet('subjects')"><i
+          class="bi bi-journal-text" aria-hidden="true"></i>Sujets<span class="responsible-nav-count">{{ sujets().length
+          }}</span></button>
+    </nav>
+    <div class="responsible-account">
+      <span class="responsible-avatar"><i class="bi bi-person-fill"></i></span>
+      <span class="responsible-account-name">
+        <strong>{{ auth.utilisateur?.prenom }} {{ auth.utilisateur?.nom }}</strong>
+        <small>Responsable pédagogique</small>
+      </span>
+      <button type="button" class="responsible-logout" (click)="deconnecter()" aria-label="Se déconnecter"
+        title="Se déconnecter"><i class="bi bi-box-arrow-right" aria-hidden="true"></i></button>
+    </div>
+  </aside>
+
+  <section class="responsible-main">
+    <header class="page-responsablebar">
+      <div>
+        <p class="responsible-breadcrumb">Espace pédagogique <span>/</span> {{ titreOnglet() }}</p>
+        <h1>{{ titreOnglet() }}</h1>
+      </div>
+      <ng-container *ngIf="onglet() === 'overview'">
+        <button type="button" class="responsible-primary" (click)="changerOnglet('applications')"><i class="bi bi-inbox"
+            aria-hidden="true"></i> Traiter les candidatures</button>
+      </ng-container>
+    </header>
+    <ng-container *ngIf="erreur()">
+      <div class="responsible-alert error" role="alert">
+        <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+        {{ erreur() }}
+        <button type="button" aria-label="Fermer" (click)="erreur.set('')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="succes()">
+      <div class="responsible-alert success" role="status">
+        <i class="bi bi-check-circle" aria-hidden="true"></i>
+        {{ succes() }}
+        <button type="button" aria-label="Fermer" (click)="succes.set('')"><i class="bi bi-x-lg"></i></button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="chargement(); else cfElse3">
+      <div class="responsible-state">
+        <span class="responsible-spinner"></span>
+        <p>Chargement de votre espace…</p>
+      </div>
+    </ng-container>
+    <ng-template #cfElse3>
+      <ng-container *ngIf="onglet() === 'overview'">
+        <section class="responsible-welcome">
+          <div>
+            <p class="responsible-eyebrow">SUIVI DES PROJETS</p>
+            <h2>Bonjour, {{ auth.utilisateur?.prenom }}.</h2>
+            <p>Consultez les propositions et prenez les décisions sur les candidatures des étudiants.</p>
+          </div>
+          <span class="responsible-welcome-icon"><i class="bi bi-clipboard2-check" aria-hidden="true"></i></span>
+        </section>
+        <section class="responsible-stats" aria-label="Résumé des candidatures">
+          <article>
+            <span class="responsible-stat-icon blue"><i class="bi bi-inbox" aria-hidden="true"></i></span>
+            <p>Total candidatures</p><strong>{{ candidatures().length }}</strong>
+            <small>tous les sujets</small>
+          </article>
+          <article>
+            <span class="responsible-stat-icon amber"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span>
+            <p>À traiter</p>
+            <strong>{{ compter('EN_ATTENTE') }}</strong>
+            <small>en attente de décision</small>
+          </article>
+          <article>
+            <span class="responsible-stat-icon green"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+            <p>Acceptées</p>
+            <strong>{{ compter('ACCEPTEE') }}</strong>
+            <small>candidatures retenues</small>
+          </article>
+          <article>
+            <span class="responsible-stat-icon rose"><i class="bi bi-x-circle" aria-hidden="true"></i></span>
+            <p>Rejetées</p>
+            <strong>{{ compter('REJETEE') }}</strong>
+            <small>candidatures refusées</small>
+          </article>
+        </section>
+        <section class="responsible-content-grid">
+          <article class="responsible-panel">
+            <div class="responsible-panel-heading">
+              <div>
+                <p class="responsible-eyebrow">À EXAMINER</p>
+                <h2>Candidatures en attente</h2>
+              </div><button type="button" class="responsible-text-button" (click)="ouvrirCandidaturesEnAttente()">Tout
+                voir <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+            </div>
+            <ng-container *ngIf="!candidaturesEnAttente().length; else cfElse1">
+              <div class="responsible-empty-inline"><i class="bi bi-check2-circle" aria-hidden="true"></i><span>Aucune
+                  candidature en attente.</span></div>
+            </ng-container><ng-template #cfElse1>
+              <div class="responsible-recent-list"><ng-container
+                  *ngFor="let c of candidaturesEnAttente().slice(0, 5); trackBy: trackById">
+                  <div class="responsible-recent-row"><span class="responsible-student-avatar"><i class="bi bi-person-fill"></i></span><span
+                      class="responsible-recent-info"><strong>{{ c.etudiant.prenom }} {{ c.etudiant.nom
+                        }}</strong><small>{{ c.sujet.titre }}</small></span><button type="button"
+                      class="responsible-review" (click)="ouvrirCandidatures(c)">Examiner</button></div>
+                </ng-container></div>
+            </ng-template>
+          </article>
+          <article class="responsible-panel capacity-panel">
+            <div class="responsible-panel-heading">
+              <div>
+                <p class="responsible-eyebrow">PROJETS</p>
+                <h2>Capacité des sujets</h2>
+              </div>
+            </div>
+            <ng-container *ngIf="!sujets().length; else cfElse2">
+              <div class="responsible-empty-inline">Aucun sujet enregistré.</div>
+            </ng-container><ng-template #cfElse2> <ng-container
+                *ngFor="let sujet of sujets().slice(0, 5); trackBy: trackById">
+                <div class="responsible-capacity-row">
+                  <div><strong>{{ sujet.titre }}</strong><span>{{ placesPrises(sujet.id) }} / {{ sujet.capaciteMax }}
+                      places attribuées</span></div><span class="responsible-capacity-status"
+                    [class.full]="placesRestantes(sujet) === 0">{{ placesRestantes(sujet) }} libre{{ placesRestantes(sujet) === 1 ? '' : 's' }}</span>
+                  <div class="responsible-progress"><i [style.width.%]="ratioCapacite(sujet)"></i></div>
+                </div>
+              </ng-container> </ng-template>
+          </article>
+        </section>
+      </ng-container></ng-template>
+
+    <ng-container *ngIf="!chargement() && onglet() === 'applications'">
+      <section class="responsible-list-panel">
+        <div class="responsible-filters">
+          <label class="responsible-search"><i class="bi bi-search" aria-hidden="true"></i><input
+              [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" name="recherche"
+              placeholder="Étudiant, sujet ou e-mail" /></label>
+          <select aria-label="Filtrer par statut" [ngModel]="filtreStatut()" (ngModelChange)="filtreStatut.set($event)">
+            <option value="TOUS">Tous les statuts</option>
+            <option value="EN_ATTENTE">En attente</option>
+            <option value="ACCEPTEE">Acceptées</option>
+            <option value="REJETEE">Rejetées</option>
+          </select>
+          <select aria-label="Filtrer par sujet" [ngModel]="filtreSujet()"
+            (ngModelChange)="filtreSujet.set($event === 'TOUS' ? 'TOUS' : +$event)">
+            <option value="TOUS">Tous les sujets</option><ng-container
+              *ngFor="let sujet of sujets(); trackBy: trackById">
+              <option [value]="sujet.id">{{ sujet.titre }}</option>
+            </ng-container>
+          </select>
+        </div>
+        <ng-container *ngIf="!candidaturesFiltrees().length; else cfElse4">
+          <div class="responsible-empty-inline"><i class="bi bi-search" aria-hidden="true"></i><span>Aucune candidature
+              ne correspond aux filtres.</span></div>
+        </ng-container><ng-template #cfElse4>
+          <div class="responsible-applications"><ng-container
+              *ngFor="let c of candidaturesFiltrees(); trackBy: trackById">
+              <article class="responsible-application"><span class="responsible-student-avatar large"><i class="bi bi-person-fill"></i></span>
+                <div class="responsible-application-main">
+                  <div class="responsible-application-head">
+                    <div>
+                      <h2>{{ c.etudiant.prenom }} {{ c.etudiant.nom }}</h2><a [href]="'mailto:' + c.etudiant.email">{{
+                        c.etudiant.email }}</a>
+                    </div><span class="responsible-status" [class.pending]="c.statut === 'EN_ATTENTE'"
+                      [class.accepted]="c.statut === 'ACCEPTEE'" [class.rejected]="c.statut === 'REJETEE'"><i></i>{{
+                      statutLabel(c.statut) }}</span>
+                  </div>
+                  <p class="responsible-subject"><i class="bi bi-journal-text" aria-hidden="true"></i>{{ c.sujet.titre
+                    }}<span>·</span> capacité {{ placesPrises(c.sujet.id) }}/{{ c.sujet.capaciteMax }}</p>
+                  <p class="responsible-motivation">{{ c.motivation || 'Aucune motivation renseignée.' }}</p>
+                  <time>Déposée le {{ c.dateCandidature | date:'d MMMM y à HH:mm' }}</time>
+                  <ng-container *ngIf="c.statut === 'EN_ATTENTE'">
+                    <div class="responsible-decision-actions"><button type="button" class="reject-button"
+                        (click)="demanderDecision(c, 'REJETER')"><i class="bi bi-x-lg" aria-hidden="true"></i>
+                        Rejeter</button><button type="button" class="accept-button"
+                        [disabled]="placesRestantes(c.sujet) <= 0"
+                        [title]="placesRestantes(c.sujet) <= 0 ? 'La capacité du sujet est atteinte' : ''"
+                        (click)="demanderDecision(c, 'ACCEPTER')"><i class="bi bi-check-lg" aria-hidden="true"></i>
+                        Accepter</button></div>
+                  </ng-container>
+                </div>
+              </article>
+            </ng-container></div>
+        </ng-template>
+        <div class="responsible-list-footer">{{ candidaturesFiltrees().length }} candidature{{
+          candidaturesFiltrees().length === 1 ? '' : 's' }}</div>
+      </section>
+    </ng-container>
+
+    <ng-container *ngIf="!chargement() && onglet() === 'subjects'">
+      <ng-container *ngIf="!sujets().length; else cfElse5">
+        <div class="responsible-empty-inline subject-empty"><i class="bi bi-journal-x"
+            aria-hidden="true"></i><span>Aucun sujet n’est disponible.</span></div>
+      </ng-container><ng-template #cfElse5>
+        <section class="responsible-subject-grid"><ng-container *ngFor="let sujet of sujets(); trackBy: trackById">
+            <article class="responsible-subject-card">
+              <div class="subject-card-top"><span class="responsible-status"
+                  [class.accepted]="sujet.statut === 'DISPONIBLE'"
+                  [class.rejected]="sujet.statut === 'INDISPONIBLE'"><i></i>{{ sujet.statut === 'DISPONIBLE' ?
+                  'Disponible' : 'Indisponible' }}</span><time>{{ sujet.dateCreation | date:'d MMM y' }}</time></div>
+              <h2>{{ sujet.titre }}</h2>
+              <p>{{ sujet.description || 'Aucune description détaillée.' }}</p>
+              <div class="responsible-subject-stats"><span><i class="bi bi-person-workspace" aria-hidden="true"></i>{{
+                  sujet.enseignant?.prenom }} {{ sujet.enseignant?.nom }}</span><span><i class="bi bi-people"
+                    aria-hidden="true"></i>{{ sujet.capaciteMax }} places</span><span><i class="bi bi-check2-circle"
+                    aria-hidden="true"></i>{{ placesPrises(sujet.id) }} acceptée{{ placesPrises(sujet.id) === 1 ? '' :
+                  's' }}</span></div><button type="button" class="responsible-text-button"
+                (click)="filtrerParSujet(sujet.id)">Voir les candidatures <i class="bi bi-arrow-right"
+                  aria-hidden="true"></i></button>
+            </article>
+          </ng-container></section>
+      </ng-template>
+    </ng-container>
+  </section>
+
+  <ng-container *ngIf="decision() && candidatureCible()">
+    <div class="responsible-overlay" (click)="fermerDecision()">
+      <section class="responsible-dialog" role="dialog" aria-modal="true" aria-labelledby="decision-title"
+        (click)="$event.stopPropagation()"><button type="button" class="responsible-dialog-close" aria-label="Fermer"
+          (click)="fermerDecision()"><i class="bi bi-x-lg"></i></button><span class="decision-icon"
+          [class.reject]="decision() === 'REJETER'"><i
+            [class]="decision() === 'ACCEPTER' ? 'bi bi-check-lg' : 'bi bi-x-lg'"></i></span>
+        <p class="responsible-eyebrow">DÉCISION PÉDAGOGIQUE</p>
+        <h2 id="decision-title">{{ decision() === 'ACCEPTER' ? 'Accepter cette candidature ?' : 'Rejeter cette candidature ?' }}</h2>
+        <p class="responsible-confirm-copy"><strong>{{ candidatureCible()?.etudiant?.prenom }} {{
+            candidatureCible()?.etudiant?.nom }}</strong> · {{ candidatureCible()?.sujet?.titre }}<br />{{ decision() === 'ACCEPTER' ? 'Cette place sera comptabilisée dans la capacité du sujet.' : 'Cette candidature sera marquée comme rejetée.' }}</p><ng-container *ngIf="erreur()">
+          <div class="responsible-alert error" role="alert">{{ erreur() }}</div>
+        </ng-container>
+        <div class="responsible-dialog-actions"><button type="button" class="responsible-secondary"
+            (click)="fermerDecision()">Annuler</button><button type="button"
+            [class.accept-button]="decision() === 'ACCEPTER'" [class.reject-button]="decision() === 'REJETER'"
+            [disabled]="envoi()" (click)="confirmerDecision()">{{ envoi() ? 'Enregistrement…' : decision() ===
+            'ACCEPTER' ? 'Confirmer l\'acceptation' : 'Confirmer le rejet' }}</button></div>
+      </section>
+    </div>
+  </ng-container>
+</main>

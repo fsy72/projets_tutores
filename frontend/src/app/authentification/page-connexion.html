@@ -1,0 +1,62 @@
+<main class="auth-layout">
+  <section class="intro">
+    <a class="brand" routerLink="/connexion"><span class="brand-mark"><i class="bi bi-mortarboard"></i></span><span>Projets tutorés</span></a>
+    <div class="intro-copy">
+      <span class="eyebrow">PLATEFORME UNIVERSITAIRE</span>
+      <h1 class="">Faites avancer vos idées, ensemble.</h1>
+      <p>Retrouvez les sujets proposés par les enseignants et suivez vos candidatures depuis un espace unique.</p>
+    </div>
+    <div class="intro-foot"><span class="status-dot"></span> Votre espace de travail académique</div>
+  </section>
+
+  <section class="form-side">
+    <div class="auth-card">
+      <div class="mobile-brand"><span class="brand-mark"><i class="bi bi-mortarboard"></i></span> Projets tutorés</div>
+      <a class="back-home" routerLink="/"><i class="bi bi-arrow-left" aria-hidden="true"></i> Retour à l'accueil</a>
+      <p class="eyebrow">{{ mode === 'connexion' ? 'BON RETOUR' : 'REJOINDRE LA PLATEFORME' }}</p>
+      <h2>{{ mode === 'connexion' ? 'Connexion' : 'Créer un compte étudiant' }}</h2>
+      <p class="subheading">{{ mode === 'connexion' ? 'Connectez-vous pour accéder à votre espace.' : 'Renseignez vos informations pour commencer.' }}</p>
+
+      <div class="tabs" role="tablist" aria-label="Choisir une action">
+        <button type="button" [class.active]="mode === 'connexion'" (click)="changerMode('connexion')">Connexion</button>
+        <button type="button" [class.active]="mode === 'inscription'" (click)="changerMode('inscription')">Inscription</button>
+      </div>
+
+      <ng-container *ngIf="erreur()"> <div class="alert error" role="alert">{{ erreur() }}</div> </ng-container>
+      <ng-container *ngIf="succes()"> <div class="alert success" role="status">{{ succes() }}</div> </ng-container>
+
+      <form (ngSubmit)="soumettre()">
+        <ng-container *ngIf="mode === 'inscription'">
+          <div class="field-row">
+            <label>Prénom<input name="prenom" [(ngModel)]="prenom" autocomplete="given-name" required /></label>
+            <label>Nom<input name="nom" [(ngModel)]="nom" autocomplete="family-name" required /></label>
+          </div>
+        </ng-container>
+        <label>Adresse e-mail
+          <input type="email" name="email" [(ngModel)]="email" autocomplete="email" placeholder="exemple@gmail.com" required />
+        </label>
+        <ng-container *ngIf="mode === 'inscription'">
+          <div class="field-row">
+            <label>Matricule<input name="matricule" [(ngModel)]="matricule" required /></label>
+            <label>Niveau<input name="niveau" [(ngModel)]="niveau" placeholder="Master 2" required /></label>
+          </div>
+        </ng-container>
+        <label>Mot de passe
+          <input type="password" name="motDePasse" [(ngModel)]="motDePasse" autocomplete="{{ mode === 'connexion' ? 'current-password' : 'new-password' }}" [minlength]="mode === 'inscription' ? 8 : 1" required />
+        </label>
+        <ng-container *ngIf="mode === 'inscription'">
+          <label>Confirmer le mot de passe
+            <input type="password" name="confirmation" [(ngModel)]="confirmation" autocomplete="new-password" minlength="8" required />
+          </label>
+          <p class="hint">Le mot de passe doit contenir au moins 8 caractères.</p>
+        </ng-container>
+        <button class="submit" type="submit" [disabled]="chargement()">
+          {{ chargement() ? 'Veuillez patienter…' : mode === 'connexion' ? 'Se connecter' : 'Créer mon compte' }}
+          <ng-container *ngIf="!chargement()"> <i class="bi bi-arrow-right" aria-hidden="true"></i> </ng-container>
+        </button>
+      </form>
+      <p class="security-note"><i class="bi bi-shield-lock" aria-hidden="true"></i> Connexion sécurisée à votre espace universitaire</p>
+    </div>
+    <footer>© 2026 Projets tutorés · Université</footer>
+  </section>
+</main>

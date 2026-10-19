@@ -1,0 +1,14 @@
+.github
+
+./diag_classes.drawio
+./diag_classes.png
+./Rapport_Technique_Projet_Tutores.docx
+./User attachment.png
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*

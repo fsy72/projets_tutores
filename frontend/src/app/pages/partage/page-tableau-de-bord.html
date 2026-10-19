@@ -1,0 +1,13 @@
+<main class="dashboard">
+      <header class="topbar"><a class="brand" href="/espace"><span class="brand-mark"><i class="bi bi-mortarboard"></i></span> Projets tutorés</a>
+        <button type="button" class="logout" (click)="deconnecter()">Se déconnecter <i class="bi bi-box-arrow-right" aria-hidden="true"></i></button>
+      </header>
+      <section class="welcome">
+        <p class="eyebrow">ESPACE PERSONNEL · {{ libelleRole }}</p>
+        <h1>Bonjour, {{ auth.utilisateur?.prenom }}.</h1>
+        <p class="description">Votre espace est prêt. Vous êtes connecté avec l’adresse <strong>{{ auth.utilisateur?.email }}</strong>.</p>
+        <div class="notice"><span class="notice-icon"><i class="bi bi-stars" aria-hidden="true"></i></span><div><strong>Bienvenue sur Projets tutorés</strong><p>La connexion et la gestion des comptes sont opérationnelles. Nous allons ajouter progressivement les outils de votre rôle.</p></div></div>
+      </section>
+      <section class="next-step"><span class="step-number">01</span><div><p class="eyebrow">PROCHAINE ÉTAPE</p><h2>Découvrir les sujets et candidatures</h2><p>Les écrans de consultation, dépôt et suivi des candidatures seront intégrés dans la prochaine étape du frontend.</p></div><i class="bi bi-arrow-up-right arrow" aria-hidden="true"></i></section>
+      <footer>© 2026 Projets tutorés</footer>
+    </main>

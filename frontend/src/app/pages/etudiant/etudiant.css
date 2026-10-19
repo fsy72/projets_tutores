@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f6f8f5;
+  color: #1d2b25;
+}
+
+.student-app {
+  min-height: 100vh;
+  max-width: 1120px;
+  margin: auto;
+  padding: 0 30px;
+}
+
+.topbar {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 38px;
+  border-bottom: 1px solid #e5eae5;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #18352c;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: #b7df94;
+  color: #17352b;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+nav {
+  display: flex;
+  align-self: stretch;
+  gap: 25px;
+}
+
+nav a {
+  position: relative;
+  display: grid;
+  align-items: center;
+  color: #7b8780;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a.active {
+  color: #254c39;
+  font-weight: 650;
+}
+
+nav a.active::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  background: #63966b;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.user-name {
+  color: #65736a;
+  font-size: 14px;
+}
+
+button {
+  border: 1px solid #dce3dd;
+  border-radius: 8px;
+  background: white;
+  padding: 9px 12px;
+  color: #405249;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+footer {
+  padding: 38px 0 25px;
+  color: #a3aca5;
+  font-size: 13px;
+}
+
+@media(max-width:700px) {
+  .student-app {
+    padding: 0 18px;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 68px;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    padding: 13px 0 0;
+  }
+
+  nav {
+    order: 3;
+    height: 44px;
+    width: 100%;
+    gap: 22px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .user-menu {
+    gap: 8px;
+  }
+}

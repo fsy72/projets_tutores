@@ -1,0 +1,43 @@
+<main class="page">
+      <section class="heading">
+        <div><p class="eyebrow">ESPACE ÉTUDIANT</p><h1>Les sujets</h1><p class="subtitle">Explorez les propositions et choisissez un projet qui vous intéresse.</p></div>
+        <div class="count"><strong>{{ filteredSubjects().length }}</strong><span>sujet{{ filteredSubjects().length === 1 ? '' : 's' }} ouvert{{ filteredSubjects().length === 1 ? '' : 's' }}</span></div>
+      </section>
+      <label class="search"><i class="bi bi-search" aria-hidden="true"></i><input [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" placeholder="Rechercher un sujet ou un mot-clé…" aria-label="Rechercher parmi les sujets" /></label>
+      <ng-container *ngIf="erreur()"> <div class="alert error" role="alert">{{ erreur() }}</div> </ng-container>
+      <ng-container *ngIf="succes()"> <div class="alert success" role="status">{{ succes() }}</div> </ng-container>
+      <ng-container *ngIf="chargement(); else cfElse2"> <div class="state"><span class="spinner"></span><p>Chargement des sujets…</p></div> </ng-container><ng-template #cfElse2><ng-container *ngIf="filteredSubjects().length === 0; else cfElse1">
+        <div class="empty"><span class="empty-icon"><i class="bi bi-journal-x" aria-hidden="true"></i></span><h2>{{ recherche() ? 'Aucun résultat' : 'Aucun sujet disponible' }}</h2><p>{{ recherche() ? 'Essayez un autre terme de recherche.' : 'Les enseignants n’ont pas encore publié de sujet disponible.' }}</p></div>
+      </ng-container><ng-template #cfElse1>
+        <section class="grid" aria-label="Liste des sujets disponibles">
+          <ng-container *ngFor="let sujet of filteredSubjects(); trackBy: trackById">
+            <article class="card">
+              <div class="card-top"><span class="badge"><i></i> Disponible</span><span class="date">{{ sujet.dateCreation | date:'d MMM y' }}</span></div>
+              <h2>{{ sujet.titre }}</h2>
+              <p class="description">{{ sujet.description || 'Aucune description détaillée pour le moment.' }}</p>
+              <div class="card-meta"><span><b>{{ sujet.placesRestantes ?? sujet.capaciteMax }}</b> place{{ (sujet.placesRestantes ?? sujet.capaciteMax) === 1 ? '' : 's' }} restante{{ (sujet.placesRestantes ?? sujet.capaciteMax) === 1 ? '' : 's' }}</span><span>Capacité {{ sujet.capaciteMax }}</span></div>
+              <button type="button" class="apply" [disabled]="dejaPostule(sujet.id) || (sujet.placesRestantes ?? 0) <= 0" (click)="ouvrirFormulaire(sujet)">
+                {{ dejaPostule(sujet.id) ? 'Candidature déposée' : 'Voir et candidater' }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </article>
+          </ng-container>
+        </section>
+      </ng-template></ng-template>
+    </main>
+
+    <ng-container *ngIf="sujetSelectionne()">
+      <div class="overlay" (click)="fermerFormulaire()" (keydown.escape)="fermerFormulaire()">
+        <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" (click)="$event.stopPropagation()">
+          <button class="close" type="button" aria-label="Fermer" (click)="fermerFormulaire()"><i class="bi bi-x-lg" aria-hidden="true"></i></button>
+          <p class="eyebrow">DÉPOSER UNE CANDIDATURE</p><h2 id="dialog-title">{{ sujetSelectionne()?.titre }}</h2>
+          <p class="dialog-description">{{ sujetSelectionne()?.description || 'Ce sujet ne comporte pas de description détaillée.' }}</p>
+          <ng-container *ngIf="erreur()"> <div class="alert error" role="alert">{{ erreur() }}</div> </ng-container>
+          <form (ngSubmit)="deposer()">
+            <label>Votre motivation <span class="optional">(facultatif)</span>
+              <textarea name="motivation" [(ngModel)]="motivation" rows="5" maxlength="3000" placeholder="Présentez brièvement votre intérêt et vos compétences pour ce sujet…"></textarea>
+            </label>
+            <div class="form-actions"><button type="button" class="cancel" (click)="fermerFormulaire()">Annuler</button><button type="submit" class="submit" [disabled]="envoi()">{{ envoi() ? 'Envoi…' : 'Envoyer ma candidature' }}</button></div>
+          </form>
+        </section>
+      </div>
+    </ng-container>
