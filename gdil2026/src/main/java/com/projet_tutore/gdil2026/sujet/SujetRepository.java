@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SujetRepository extends JpaRepository<Sujet, Long> {
+    long countByEnseignant_Id(Long enseignantId);
     @Override
     @EntityGraph(attributePaths = "enseignant")
     List<Sujet> findAll();

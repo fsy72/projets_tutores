@@ -1,9 +1,9 @@
 .github
 
-./diag_classes.drawio
-./diag_classes.png
-./Rapport_Technique_Projet_Tutores.docx
-./User attachment.png
+diag_classes.drawio
+diag_classes.png
+Rapport_Technique_Projet_Tutores.docx
+User attachment.png
 
 # Visual Studio Code
 .vscode/*

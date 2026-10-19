@@ -8,14 +8,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.projet_tutore.gdil2026.sujet.SujetRepository;
+
 @Service
 @Transactional
 public class UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
+    private final SujetRepository sujetRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UtilisateurService(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder) {
+    public UtilisateurService(UtilisateurRepository utilisateurRepository, SujetRepository sujetRepository,
+            PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
+        this.sujetRepository = sujetRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -69,8 +74,14 @@ public class UtilisateurService {
     }
 
     public void supprimer(Long id) {
-        if (!utilisateurRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur introuvable.");
+        Utilisateur utilisateur = obtenirParId(id);
+        if (utilisateur.getRole() == Role.ENSEIGNANT) {
+            long nombreSujets = sujetRepository.countByEnseignant_Id(id);
+            if (nombreSujets > 0) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Ce compte enseignant ne peut pas être supprimé car il est associé à "
+                                + nombreSujets + " sujet(s). Supprimez ou réattribuez ces sujets avant de supprimer le compte.");
+            }
         }
         utilisateurRepository.deleteById(id);
     }
